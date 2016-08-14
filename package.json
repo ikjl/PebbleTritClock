@@ -1,0 +1,51 @@
+{
+    "author": "sfkyale@gmail.com",
+    "dependencies": {
+        "pebble-clay": "^1.0.0"
+    },
+    "keywords": [],
+    "name": "trit-clock",
+    "pebble": {
+        "capabilities": [
+            "configurable"
+        ],
+        "displayName": "Trit-Clock",
+        "enableMultiJS": true,
+        "messageKeys": [
+            "second",
+            "random",
+            "secondRand",
+            "minuteRand",
+            "hourRand",
+            "blackIsBack",
+            "backColor",
+            "monoText",
+            "negColor",
+            "nilColor",
+            "posColor"
+        ],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "characterRegex": "[ -\\[]",
+                    "file": "fonts/DVSMBTernary36",
+                    "name": "DVSMBTernary36",
+                    "targetPlatforms": null,
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk"
+        ],
+        "uuid": "fe91fa6c-4eee-4d20-823d-9a173968e171",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
