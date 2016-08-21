@@ -1,4 +1,8 @@
 #include <pebble.h>
+/* notes for future additions:
+  Allow inverting display colors. If background and text color are the same make the text white or black to avoid conflict.
+     Mechanism. notBack (not background color) = black if background is not black, else white.
+*/
 // greebo trouble shooting counters and bool
 static long ga; // track number of times timeHandler called early 
 static long gb;
@@ -19,7 +23,7 @@ static char pick [27][2] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K
 static int pickLengthThird = 27 / 3; // pick lenght
    // character shcemes
 // randomly change characte scheme
-bool yesRandSec = true;
+bool yesRandSec = false;
 bool yesRandMin = true; // greebo
 bool yesRandHour = false; 
 
@@ -45,6 +49,7 @@ static int64_t thisTime; // ms since 1970 aka epoc.
 static long timeSlate; // store manapulations of now.
 // static struct tm tuesday_t; // used to check if time changed.
 static time_t fetch_t; // used to fetch time as seconds since 1970.
+static time_t wasToday; // keep start of today for comparison.
 static uint16_t fetch_ms; // stores milliseconds since second.
 static bool changeHour = false;
 static bool changeMinute = false;
@@ -61,11 +66,18 @@ static int k; // third counter
 static TextLayer* layers[11];
 static GFont s_font;
 
+// none -> bool
+static bool timeChanged(){
+  return wasToday != time_start_of_today(); 
+}
+
 // none -> none
 static void yesterdayTomorrow(){
-  yesterday = (int64_t)time_start_of_today() * 1000;
+  wasToday = time_start_of_today();
+  yesterday = (int64_t)wasToday * 1000;
   tomorrow = yesterday + 86400000; 
 }
+
 // none -> none
 // get time in milliseconds
 static int64_t fetchTime(){
@@ -116,6 +128,9 @@ static void hms(){
 // none -> none
 // function for handeling chage of day.
 static void newDay(){
+  // /* 
+     APP_LOG(APP_LOG_LEVEL_DEBUG, "timeChanged %d", timeChanged());
+  // */
   yesterdayTomorrow();
   findNow();
   hms();
@@ -189,7 +204,7 @@ static void timeHandler(){
     // */
     app_timer_cancel(timeHandle);  // sends an error messeage if time elapsed
   }
-  if (thisTime > tomorrow) newDay(); // the day rolled over 
+  if (timeChanged() || thisTime > tomorrow) newDay(); // the day rolled over 
   else if (abs(thisTime - nextTime) > 100) newDay(); // if called by service
   alarmTime = waitMS(); 
   if (alarmTime < 50) {
